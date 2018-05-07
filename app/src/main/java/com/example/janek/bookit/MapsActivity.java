@@ -51,7 +51,7 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.OnConnectionFailedListener{
 
     private static final float DEFAULT_ZOOM = 15;
-    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40,-168), new LatLng(71,136));
+    private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(52,17 ), new LatLng(53,17));
 
     private AutoCompleteTextView mSearchText;
     private PlaceInfo mPlace;
