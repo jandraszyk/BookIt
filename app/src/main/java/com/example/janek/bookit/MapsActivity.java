@@ -1,5 +1,6 @@
 package com.example.janek.bookit;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -27,13 +28,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.AutocompletePrediction;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.PlaceDetectionClient;
+import com.google.android.gms.location.places.PlaceFilter;
+import com.google.android.gms.location.places.PlaceLikelihood;
+import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
+import com.google.android.gms.location.places.PlacesOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -52,13 +59,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final float DEFAULT_ZOOM = 15;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(52,17 ), new LatLng(53,17));
+    private static final int SEARCH_RADIUS = 10000;
 
     private AutoCompleteTextView mSearchText;
     private PlaceInfo mPlace;
 
     private GoogleMap mMap;
+    private double latitude;
+    private double longitude;
+    private LocationRequest locationRequest;
     private boolean mLocationPermissionGranted = false;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location lastLocation;
+
     private GeoDataClient geoDataClient;
     private PlaceDetectionClient placeDetectionClient;
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
@@ -145,6 +158,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
         hideKeyboard();
+
+        getCurrentPlaceData();
     }
 
     private void geoLocate() {
@@ -168,6 +183,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void moveCamera(LatLng latLng, float zoom, String title) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
 
+        mMap.clear();
+
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+
         if(!title.equals("My Location")) {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(latLng)
@@ -186,9 +205,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()) {
-                            Location currentLocation = (Location) task.getResult();
-
-                            moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()),DEFAULT_ZOOM, "My Location");
+                            lastLocation = (Location) task.getResult();
+                           //latitude = lastLocation.getLatitude();
+                           //longitude = lastLocation.getLongitude();
+                           //String url = getUrl(latitude,longitude,"restaurant");
+                           //Object[] dataTransfer = new Object[2];
+                           //dataTransfer[0] = mMap;
+                           //dataTransfer[1] = url;
+                           //GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+                           //getNearbyPlacesData.execute(dataTransfer);
+                            moveCamera(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude()),DEFAULT_ZOOM, "My Location");
                         } else {
                             Toast.makeText(MapsActivity.this,"Unable to locate the device", Toast.LENGTH_SHORT).show();
                         }
@@ -198,6 +224,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (SecurityException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getUrl(double latitude, double longitude, String restaurant) {
+        StringBuilder googlePlacesURL = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesURL.append("location=" + latitude + "," + longitude);
+        googlePlacesURL.append("&radius=" + SEARCH_RADIUS);
+        googlePlacesURL.append("&types=restaurant");
+        googlePlacesURL.append("&key=" + "AIzaSyDNfU8aWub1-PXATwLSpde-9dQxX8SdP5g");
+        return googlePlacesURL.toString();
+
     }
 
     private void hideKeyboard() {
@@ -230,7 +266,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mPlace = new PlaceInfo();
                 mPlace.setName(place.getName().toString());
                 mPlace.setAddress(place.getAddress().toString());
-                //mPlace.setAttributions(place.getAttributions().toString());
                 mPlace.setId(place.getId());
                 mPlace.setLatLng(place.getLatLng());
                 mPlace.setRating(place.getRating());
@@ -288,5 +323,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getCurrentPlaceData() {
+        Task<PlaceLikelihoodBufferResponse> placeResult = placeDetectionClient.getCurrentPlace(null);
+        placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
+                Log.d("MapsActivity", "current location places info");
+                List<Place> placesList = new ArrayList<>();
+                PlaceLikelihoodBufferResponse likelihoods = task.getResult();
+                for(PlaceLikelihood placeLikelihood : likelihoods) {
+                    if(placeLikelihood.getPlace().getPlaceTypes().contains(Place.TYPE_RESTAURANT)) {
+                        placesList.add(placeLikelihood.getPlace().freeze());
+                        System.out.println("Added restaurant to the list");
+                        System.out.println(placeLikelihood.getPlace().getRating());
+                        MarkerOptions markerOptions = new MarkerOptions()
+                                .position(placeLikelihood.getPlace().getLatLng())
+                                .snippet(String.valueOf(placeLikelihood.getPlace().getRating()))
+                                .title(placeLikelihood.getPlace().getName().toString());
+                        mMap.addMarker(markerOptions);
+                    }
+                }
+                likelihoods.release();
+
+            }
+        });
     }
 }

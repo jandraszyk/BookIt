@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.app.*;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -24,7 +25,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btMap = findViewById(R.id.btFilter);
-        isServicesOK();
+        if(!isServicesOK()) {
+            Log.d("onCreate", " Finishing app because Google Play Services aren't available");
+            finish();
+        }
         btMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
 
     public boolean isServicesOK() {
 
