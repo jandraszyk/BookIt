@@ -19,6 +19,7 @@ public class PlaceInfo {
     private float rating;
     private String attributions;
 
+
     public PlaceInfo(String name, String address, String phoneNumber, String id, Uri websiteUri, LatLng latLng, float rating, String attributions) {
         this.name = name;
         this.address = address;

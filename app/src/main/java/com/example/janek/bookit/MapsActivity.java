@@ -22,6 +22,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.janek.bookit.models.MockModel;
 import com.example.janek.bookit.models.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -77,6 +78,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
 
+    private MockModel mockModel = new MockModel();
+    private ArrayList<PlaceInfo> placeInfoArrayList;
+
 
 
 
@@ -85,6 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mSearchText = findViewById(R.id.input_search);
+        placeInfoArrayList = mockModel.getRestaurantsList();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             getLocationPermission();
@@ -327,28 +332,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @SuppressLint("MissingPermission")
     private void getCurrentPlaceData() {
-        Task<PlaceLikelihoodBufferResponse> placeResult = placeDetectionClient.getCurrentPlace(null);
-        placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
-                Log.d("MapsActivity", "current location places info");
-                List<Place> placesList = new ArrayList<>();
-                PlaceLikelihoodBufferResponse likelihoods = task.getResult();
-                for(PlaceLikelihood placeLikelihood : likelihoods) {
-                    if(placeLikelihood.getPlace().getPlaceTypes().contains(Place.TYPE_RESTAURANT)) {
-                        placesList.add(placeLikelihood.getPlace().freeze());
-                        System.out.println("Added restaurant to the list");
-                        System.out.println(placeLikelihood.getPlace().getRating());
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .position(placeLikelihood.getPlace().getLatLng())
-                                .snippet(String.valueOf(placeLikelihood.getPlace().getRating()))
-                                .title(placeLikelihood.getPlace().getName().toString());
-                        mMap.addMarker(markerOptions);
-                    }
-                }
-                likelihoods.release();
+        /*Task<PlaceLikelihoodBufferResponse> placeResult = placeDetectionClient.getCurrentPlace(null);
+                placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
+                        Log.d("MapsActivity", "current location places info");
+                        List<Place> placesList = new ArrayList<>();
+                        PlaceLikelihoodBufferResponse likelihoods = task.getResult();
+                        for(PlaceLikelihood placeLikelihood : likelihoods) {
+                            if(placeLikelihood.getPlace().getPlaceTypes().contains(Place.TYPE_RESTAURANT)) {
+                                placesList.add(placeLikelihood.getPlace().freeze());
+                                System.out.println("Added restaurant to the list");
+                                System.out.println(placeLikelihood.getPlace().getRating());
+                                MarkerOptions markerOptions = new MarkerOptions()
+                                        .position(placeLikelihood.getPlace().getLatLng())
+                                        .snippet(String.valueOf(placeLikelihood.getPlace().getRating()))
+                                        .title(placeLikelihood.getPlace().getName().toString());
+                                mMap.addMarker(markerOptions);
+                            }
+                        }
+                        likelihoods.release();
 
             }
-        });
+        });*/
+        for(PlaceInfo placeInfo : placeInfoArrayList) {
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(placeInfo.getLatLng())
+                    .title(placeInfo.getName());
+            mMap.addMarker(markerOptions);
+        }
     }
 }
