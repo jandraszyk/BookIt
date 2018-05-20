@@ -1,6 +1,7 @@
 package com.example.janek.bookit;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -134,6 +135,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                Toast.makeText(MapsActivity.this,"Restaurant selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MapsActivity.this,ActivityBook.class);
+                startActivity(intent);
+            }
+        });
 
         init();
     }
@@ -195,7 +205,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //mMap.clear();
 
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
 
         if(!title.equals("My Location")) {
             MarkerOptions markerOptions = new MarkerOptions()
