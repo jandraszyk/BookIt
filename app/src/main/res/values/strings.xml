@@ -2,4 +2,9 @@
 
     <string name="app_name">BookIt</string>
     <string name="title_activity_maps">Map</string>
+    <string name="button_book">Book the table</string>
+    <string name="City">Poznan</string>
+    <string name="foodType">Polska, Włoska</string>
+    <string name="noOfReviews">26 reviews</string>
+    <string name="placeName">bistro Ale Smacznie</string>
 </resources>

@@ -19,6 +19,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,6 +49,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -64,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private AutoCompleteTextView mSearchText;
     private PlaceInfo mPlace;
+    private Button btBook;
 
     private GoogleMap mMap;
     private double latitude;
@@ -80,6 +83,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private MockModel mockModel = new MockModel();
     private ArrayList<PlaceInfo> placeInfoArrayList;
+    private boolean selected = false;
 
 
 
@@ -90,6 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         mSearchText = findViewById(R.id.input_search);
         placeInfoArrayList = mockModel.getRestaurantsList();
+        btBook = findViewById(R.id.btBook);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             getLocationPermission();
@@ -188,7 +193,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void moveCamera(LatLng latLng, float zoom, String title) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
 
-        mMap.clear();
+        //mMap.clear();
 
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(MapsActivity.this));
 
@@ -355,11 +360,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });*/
+
         for(PlaceInfo placeInfo : placeInfoArrayList) {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(placeInfo.getLatLng())
+                    .snippet(String.valueOf(placeInfo.getRating()))
                     .title(placeInfo.getName());
             mMap.addMarker(markerOptions);
         }
+        moveCamera(placeInfoArrayList.get(0).getLatLng(),DEFAULT_ZOOM,placeInfoArrayList.get(0).getName());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.janek.bookit;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RatingBar;
@@ -20,7 +21,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     public CustomInfoWindowAdapter(Context mContext) {
         this.mContext = mContext;
-        mWindow = LayoutInflater.from(mContext).inflate(R.layout.list_element, null);
+        mWindow = LayoutInflater.from(mContext).inflate(R.layout.custom_infowindow, null);
+        mWindow.setBackgroundResource(R.drawable.marker_border);
+
     }
 
     private void renderWindow(Marker marker, View view) {
@@ -28,6 +31,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         String snippet = marker.getSnippet();
         TextView txtTtitle = view.findViewById(R.id.restaurantName);
         RatingBar ratingBar = view.findViewById(R.id.ratingBar);
+        TextView txtFoodType = view.findViewById(R.id.foodType);
 
         if(!title.equals("")) {
             txtTtitle.setText(title);

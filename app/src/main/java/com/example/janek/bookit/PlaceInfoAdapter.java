@@ -46,7 +46,7 @@ public class PlaceInfoAdapter extends ArrayAdapter<PlaceInfo> {
                 restaurantName.setText(restaurant.getName());
             }
             if(restaurantAddress != null) {
-                restaurantAddress.setText(restaurant.getAddress());
+                restaurantAddress.setText(restaurant.getFoodType());
             }
             if(ratingBar != null) {
                 ratingBar.setRating(restaurant.getRating());

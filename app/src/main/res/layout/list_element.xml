@@ -24,30 +24,33 @@
             android:id="@+id/restaurantName"
             android:focusable="false"
             android:textSize="22sp"
-            android:text="bistro Ale Smacznie"
+            android:text="@string/placeName"
             android:layout_marginStart="3dp"
             android:gravity="start"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <RatingBar
                 android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleIndicator"
                 android:layout_width="0dp"
+                android:clickable="false"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:focusable="false"
+                android:isIndicator="true"
                 android:numStars="5"
                 android:rating="1"
-                android:stepSize="0.5"
-                android:focusable="false"
-                />
+                android:stepSize="0.5" />
             <TextView
                 android:id="@+id/numOfReviews"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textSize="16sp"
-                android:text="26 reviews"
+                android:text="@string/noOfReviews"
                 android:gravity="center_vertical"
                 />
         </LinearLayout>
@@ -62,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textSize="16sp"
-                android:text="Polska, Włoska"
+                android:text="@string/foodType"
                 android:gravity="start"/>
             <TextView
                 android:id="@+id/city"
@@ -70,7 +73,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textSize="16sp"
-                android:text="Kutno"
+                android:text="@string/City"
                 android:layout_marginEnd="8sp"
                 android:gravity="end"/>
         </LinearLayout>

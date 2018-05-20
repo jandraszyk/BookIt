@@ -18,9 +18,10 @@ public class PlaceInfo {
     private LatLng latLng;
     private float rating;
     private String attributions;
+    private String foodType;
 
 
-    public PlaceInfo(String name, String address, String phoneNumber, String id, Uri websiteUri, LatLng latLng, float rating, String attributions) {
+    public PlaceInfo(String name, String address, String phoneNumber, String id, Uri websiteUri, LatLng latLng, float rating, String attributions, String foodType) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
@@ -29,6 +30,11 @@ public class PlaceInfo {
         this.latLng = latLng;
         this.rating = rating;
         this.attributions = attributions;
+        this.foodType = foodType;
+    }
+
+    public PlaceInfo() {
+
     }
 
     public String getName() {
@@ -95,8 +101,12 @@ public class PlaceInfo {
         this.attributions = attributions;
     }
 
-    public PlaceInfo() {
+    public String getFoodType() {
+        return foodType;
+    }
 
+    public void setFoodType(String foodType) {
+        this.foodType = foodType;
     }
 
     @Override
@@ -110,6 +120,7 @@ public class PlaceInfo {
                 ", latLng=" + latLng +
                 ", rating=" + rating +
                 ", attributions='" + attributions + '\'' +
+                ", foodType='" + foodType + '\'' +
                 '}';
     }
 }
