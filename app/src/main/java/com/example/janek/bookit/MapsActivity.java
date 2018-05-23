@@ -82,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
 
-    private MockModel mockModel = new MockModel();
+    //private MockModel mockModel = new MockModel();
     private ArrayList<PlaceInfo> placeInfoArrayList;
     private boolean selected = false;
 
@@ -94,7 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mSearchText = findViewById(R.id.input_search);
-        placeInfoArrayList = mockModel.getRestaurantsList();
+        //placeInfoArrayList = mockModel.getRestaurantsList();
         btBook = findViewById(R.id.btBook);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -286,7 +286,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mPlace.setName(place.getName().toString());
                 mPlace.setAddress(place.getAddress().toString());
                 mPlace.setId(place.getId());
-                mPlace.setLatLng(place.getLatLng());
                 mPlace.setRating(place.getRating());
                 mPlace.setPhoneNumber(place.getPhoneNumber().toString());
                 mPlace.setWebsiteUri(place.getWebsiteUri());
@@ -372,11 +371,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         for(PlaceInfo placeInfo : placeInfoArrayList) {
             MarkerOptions markerOptions = new MarkerOptions()
-                    .position(placeInfo.getLatLng())
+                    .position(new LatLng(placeInfo.getLatitude(),placeInfo.getLongitude()))
                     .snippet(String.valueOf(placeInfo.getRating()))
                     .title(placeInfo.getName());
             mMap.addMarker(markerOptions);
         }
-        moveCamera(placeInfoArrayList.get(0).getLatLng(),DEFAULT_ZOOM,placeInfoArrayList.get(0).getName());
+        moveCamera(new LatLng(placeInfoArrayList.get(0).getLatitude(),placeInfoArrayList.get(0).getLongitude()),DEFAULT_ZOOM,placeInfoArrayList.get(0).getName());
     }
 }

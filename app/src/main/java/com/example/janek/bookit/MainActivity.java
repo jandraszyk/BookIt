@@ -10,12 +10,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.janek.bookit.models.MockModel;
 import com.example.janek.bookit.models.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int ERROR_DIALOG_REQUEST = 9001;
     private ListView restaurantList;
-    private MockModel mockModel;
     private ArrayList<PlaceInfo> placeInfoList;
     private PlaceInfoAdapter placeInfoAdapter;
+    private TextView title;
+
+    DatabaseReference databaseRestaurants = FirebaseDatabase.getInstance().getReference("Restaurants");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +42,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button btMap = findViewById(R.id.btFilter);
         restaurantList = findViewById(R.id.listView);
-        mockModel = new MockModel();
-        placeInfoList = mockModel.getRestaurantsList();
-        placeInfoAdapter = new PlaceInfoAdapter(this, R.layout.list_element,placeInfoList);
-        restaurantList.setAdapter(placeInfoAdapter);
-        placeInfoAdapter.notifyDataSetChanged();
+        title = findViewById(R.id.txtLabel);
+        placeInfoList = new ArrayList<>();
+
         System.out.println("!!!!!!!!" + placeInfoList.size());
         if(!isServicesOK()) {
             Log.d("onCreate", " Finishing app because Google Play Services aren't available");
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                 //startActivity(intent);
+                //conditionRef.setValue("Filter");
                 Toast.makeText(MainActivity.this, "This will display filters for searching", Toast.LENGTH_SHORT).show();
             }
         });
@@ -86,5 +93,30 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+
+        databaseRestaurants.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                placeInfoList.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    PlaceInfo restaurant = snapshot.getValue(PlaceInfo.class);
+                    placeInfoList.add(restaurant);
+                }
+
+                placeInfoAdapter = new PlaceInfoAdapter(MainActivity.this, R.layout.list_element,placeInfoList);
+                restaurantList.setAdapter(placeInfoAdapter);
+                placeInfoAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

@@ -15,19 +15,21 @@ public class PlaceInfo {
     private String phoneNumber;
     private String id;
     private Uri websiteUri;
-    private LatLng latLng;
+    private double latitude;
+    private double longitude;
     private float rating;
     private String attributions;
     private String foodType;
 
 
-    public PlaceInfo(String name, String address, String phoneNumber, String id, Uri websiteUri, LatLng latLng, float rating, String attributions, String foodType) {
+    public PlaceInfo(String name, String address, String phoneNumber, String id, Uri websiteUri,double latitude, double longitude, float rating, String attributions, String foodType) {
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.id = id;
         this.websiteUri = websiteUri;
-        this.latLng = latLng;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.rating = rating;
         this.attributions = attributions;
         this.foodType = foodType;
@@ -77,14 +79,6 @@ public class PlaceInfo {
         this.websiteUri = websiteUri;
     }
 
-    public LatLng getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
-    }
-
     public float getRating() {
         return rating;
     }
@@ -109,6 +103,22 @@ public class PlaceInfo {
         this.foodType = foodType;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     @Override
     public String toString() {
         return "PlaceInfo{" +
@@ -117,7 +127,6 @@ public class PlaceInfo {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", id='" + id + '\'' +
                 ", websiteUri=" + websiteUri +
-                ", latLng=" + latLng +
                 ", rating=" + rating +
                 ", attributions='" + attributions + '\'' +
                 ", foodType='" + foodType + '\'' +
