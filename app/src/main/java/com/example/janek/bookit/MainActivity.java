@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.app.*;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -61,6 +62,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        restaurantList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(MainActivity.this, ActivityBook.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     public boolean isServicesOK() {
@@ -76,4 +85,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
+
+
 }
