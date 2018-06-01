@@ -7,4 +7,5 @@
     <string name="foodType">Polska, Włoska</string>
     <string name="noOfReviews">26 reviews</string>
     <string name="placeName">bistro Ale Smacznie</string>
+    <string name="title_activity_restaurant">RestaurantActivity</string>
 </resources>
