@@ -54,6 +54,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,10 +87,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     private GoogleApiClient mGoogleApiClient;
 
-    //private MockModel mockModel = new MockModel();
     private ArrayList<PlaceInfo> placeInfoArrayList;
     private boolean selected = false;
 
+    DatabaseReference databaseRestaurants = FirebaseDatabase.getInstance().getReference("Restaurants");
 
 
 
@@ -94,8 +99,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         mSearchText = findViewById(R.id.input_search);
-        //placeInfoArrayList = mockModel.getRestaurantsList();
+        placeInfoArrayList = new ArrayList<>();
         btBook = findViewById(R.id.btBook);
+        databaseRestaurants.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                placeInfoArrayList.clear();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    PlaceInfo restaurant = snapshot.getValue(PlaceInfo.class);
+                    placeInfoArrayList.add(restaurant);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             getLocationPermission();
@@ -225,14 +246,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onComplete(@NonNull Task task) {
                         if(task.isSuccessful()) {
                             lastLocation = (Location) task.getResult();
-                           //latitude = lastLocation.getLatitude();
-                           //longitude = lastLocation.getLongitude();
-                           //String url = getUrl(latitude,longitude,"restaurant");
-                           //Object[] dataTransfer = new Object[2];
-                           //dataTransfer[0] = mMap;
-                           //dataTransfer[1] = url;
-                           //GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
-                           //getNearbyPlacesData.execute(dataTransfer);
                             moveCamera(new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude()),DEFAULT_ZOOM, "My Location");
                         } else {
                             Toast.makeText(MapsActivity.this,"Unable to locate the device", Toast.LENGTH_SHORT).show();
@@ -343,31 +356,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
     @SuppressLint("MissingPermission")
     private void getCurrentPlaceData() {
-        /*Task<PlaceLikelihoodBufferResponse> placeResult = placeDetectionClient.getCurrentPlace(null);
-                placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
-                        Log.d("MapsActivity", "current location places info");
-                        List<Place> placesList = new ArrayList<>();
-                        PlaceLikelihoodBufferResponse likelihoods = task.getResult();
-                        for(PlaceLikelihood placeLikelihood : likelihoods) {
-                            if(placeLikelihood.getPlace().getPlaceTypes().contains(Place.TYPE_RESTAURANT)) {
-                                placesList.add(placeLikelihood.getPlace().freeze());
-                                System.out.println("Added restaurant to the list");
-                                System.out.println(placeLikelihood.getPlace().getRating());
-                                MarkerOptions markerOptions = new MarkerOptions()
-                                        .position(placeLikelihood.getPlace().getLatLng())
-                                        .snippet(String.valueOf(placeLikelihood.getPlace().getRating()))
-                                        .title(placeLikelihood.getPlace().getName().toString());
-                                mMap.addMarker(markerOptions);
-                            }
-                        }
-                        likelihoods.release();
-
-            }
-        });*/
 
         for(PlaceInfo placeInfo : placeInfoArrayList) {
             MarkerOptions markerOptions = new MarkerOptions()
