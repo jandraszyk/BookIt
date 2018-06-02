@@ -5,11 +5,13 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -22,7 +24,7 @@ import java.util.Calendar;
 public class ActivityBook extends AppCompatActivity {
 
     private TextView displayDate,displayTime;
-    private Button btDate,btTime;
+    private Button btDate,btTime, btSubmit;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,7 @@ public class ActivityBook extends AppCompatActivity {
         displayTime = findViewById(R.id.txtTime);
         btTime = findViewById(R.id.btTime);
         btDate = findViewById(R.id.btDay);
+        btSubmit = findViewById(R.id.btSubmit);
         btDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,6 +56,14 @@ public class ActivityBook extends AppCompatActivity {
                 int minute = calendar.get(Calendar.MINUTE);
                 TimePickerDialog dialog = new TimePickerDialog(ActivityBook.this,R.style.Theme_AppCompat_Light_Dialog_MinWidth,timeSetListener,hour,minute,true);
                 dialog.show();
+            }
+        });
+
+        btSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ActivityBook.this, PlaceActivity.class);
+                startActivity(intent);
             }
         });
 

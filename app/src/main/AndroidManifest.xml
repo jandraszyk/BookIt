@@ -46,6 +46,7 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity android:name=".ActivityBook" />
+        <activity android:name=".PlaceActivity" />
     </application>
 
 </manifest>
