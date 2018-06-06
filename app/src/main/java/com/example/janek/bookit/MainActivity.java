@@ -24,6 +24,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<PlaceInfo> placeInfoList;
     private PlaceInfoAdapter placeInfoAdapter;
     private TextView title;
+    private boolean ascending = false;
 
     DatabaseReference databaseRestaurants = FirebaseDatabase.getInstance().getReference("Restaurants");
 
@@ -44,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         restaurantList = findViewById(R.id.listView);
         title = findViewById(R.id.txtLabel);
         placeInfoList = new ArrayList<>();
-
         System.out.println("!!!!!!!!" + placeInfoList.size());
         if(!isServicesOK()) {
             Log.d("onCreate", " Finishing app because Google Play Services aren't available");
@@ -53,10 +55,27 @@ public class MainActivity extends AppCompatActivity {
         btMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                //startActivity(intent);
-                //conditionRef.setValue("Filter");
+
                 Toast.makeText(MainActivity.this, "This will display filters for searching", Toast.LENGTH_SHORT).show();
+                if(ascending) {
+                    ascending = false;
+                    Collections.sort(placeInfoList, new Comparator<PlaceInfo>() {
+                        @Override
+                        public int compare(PlaceInfo placeInfo, PlaceInfo t1) {
+                            placeInfoAdapter.notifyDataSetChanged();
+                            return Float.compare(placeInfo.getRating(),t1.getRating());
+                        }
+                    });
+                } else {
+                    ascending = true;
+                    Collections.sort(placeInfoList, Collections.reverseOrder(new Comparator<PlaceInfo>() {
+                        @Override
+                        public int compare(PlaceInfo placeInfo, PlaceInfo t1) {
+                            placeInfoAdapter.notifyDataSetChanged();
+                            return Float.compare(placeInfo.getRating(),t1.getRating());
+                        }
+                    }));
+                }
             }
         });
 

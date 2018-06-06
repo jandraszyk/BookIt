@@ -111,6 +111,7 @@ public class MockModel {
         zones.setId(id);
         zones.setRestaurantId(restaurantId);
         zones.setZoneNumber(zoneNumber);
+        zones.setNumberOfAllPlaces(numberOfAllPlaces);
         zones.setNumberOfAvailablePlaces(numberOfAvailablePlaces);
 
         databaseZones.child(id).setValue(zones);
