@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -31,6 +32,7 @@ public class ActivityBook extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private EditText editText;
+    private boolean[] isComponentSelected = {false, false, false};
     private int requestedNumberOfPlaces;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +48,13 @@ public class ActivityBook extends AppCompatActivity {
         btDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isComponentSelected[0] = true;
                 Calendar calendar = Calendar.getInstance();
                 int year = calendar.get(Calendar.YEAR);
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dialog = new DatePickerDialog(ActivityBook.this,R.style.Theme_AppCompat_Light_Dialog_MinWidth,dateSetListener,year,month,day);
+                DatePickerDialog dialog = new DatePickerDialog(ActivityBook.this, R.style.Theme_AppCompat_Light_Dialog_MinWidth, dateSetListener, year, month, day);
                 dialog.show();
             }
         });
@@ -59,10 +62,12 @@ public class ActivityBook extends AppCompatActivity {
         btTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                isComponentSelected[1] = true;
+                System.out.print("jeden0");
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
-                TimePickerDialog dialog = new TimePickerDialog(ActivityBook.this,R.style.Theme_AppCompat_Light_Dialog_MinWidth,timeSetListener,hour,minute,true);
+                TimePickerDialog dialog = new TimePickerDialog(ActivityBook.this, R.style.Theme_AppCompat_Light_Dialog_MinWidth, timeSetListener, hour, minute, true);
                 dialog.show();
             }
         });
@@ -70,11 +75,24 @@ public class ActivityBook extends AppCompatActivity {
         btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent previousIntent = getIntent();
-                String restaurantId = previousIntent.getExtras().getString("restaurantId");
-                Intent intent = new Intent(ActivityBook.this, PlaceActivity.class);
-                intent.putExtra("restaurantId", restaurantId).putExtra("requestedNumberOfPlaces", requestedNumberOfPlaces);
-                startActivity(intent);
+                if(isComponentSelected[0] && isComponentSelected[1] && isComponentSelected[2]){
+                    Intent previousIntent = getIntent();
+                    String restaurantId = previousIntent.getExtras().getString("restaurantId");
+                    Intent intent = new Intent(ActivityBook.this, PlaceActivity.class);
+                    intent.putExtra("restaurantId", restaurantId).putExtra("requestedNumberOfPlaces", requestedNumberOfPlaces);
+                    startActivity(intent);
+                } else {
+                    android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(ActivityBook.this).create();
+                    alertDialog.setTitle("Data is incomplete");
+                    alertDialog.setMessage("Please fill all necessary data");
+                    alertDialog.setButton(android.support.v7.app.AlertDialog.BUTTON_NEUTRAL, "OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
             }
         });
 
@@ -107,6 +125,7 @@ public class ActivityBook extends AppCompatActivity {
         }
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
+            isComponentSelected[2] = true;
             requestedNumberOfPlaces = Integer.parseInt(s.toString());
 
         }

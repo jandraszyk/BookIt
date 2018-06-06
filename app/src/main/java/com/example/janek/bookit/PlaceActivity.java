@@ -1,12 +1,15 @@
 package com.example.janek.bookit;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.janek.bookit.models.PlaceInfo;
 import com.example.janek.bookit.models.PlaceInfo_RestaurantsZones;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -74,32 +77,56 @@ public class PlaceActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                processData(0);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                processData(1);
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                processData(2);
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                processData(3);
             }
         });
         button5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                processData(4);
             }
         });
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                processData(5);
             }
         });
+    }
+
+    private void processData(int button){
+        if(places.get(button).getNumberOfAvailablePlaces() < requestedNumberOfPlaces){
+            AlertDialog alertDialog = new AlertDialog.Builder(PlaceActivity.this).create();
+            alertDialog.setTitle("No places available");
+            alertDialog.setMessage("Please choose one of the green zones");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+            return;
+        }
+        Intent intent = new Intent(PlaceActivity.this, PersonalDataActivity.class);
+        startActivity(intent);
     }
 }
