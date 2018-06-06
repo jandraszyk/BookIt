@@ -72,7 +72,10 @@ public class MainActivity extends AppCompatActivity {
         restaurantList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                PlaceInfo selectedPlace = placeInfoList.get(i);
+                String restaurantId = selectedPlace.getId();
                 Intent intent = new Intent(MainActivity.this, ActivityBook.class);
+                intent.putExtra("restaurantId", restaurantId);
                 startActivity(intent);
             }
         });

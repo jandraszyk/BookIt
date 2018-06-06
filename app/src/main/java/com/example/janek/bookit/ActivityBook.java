@@ -10,10 +10,13 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -27,6 +30,8 @@ public class ActivityBook extends AppCompatActivity {
     private Button btDate,btTime, btSubmit;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
+    private EditText editText;
+    private int requestedNumberOfPlaces;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
@@ -35,6 +40,9 @@ public class ActivityBook extends AppCompatActivity {
         btTime = findViewById(R.id.btTime);
         btDate = findViewById(R.id.btDay);
         btSubmit = findViewById(R.id.btSubmit);
+        editText = findViewById(R.id.numOfPeople);
+        editText.addTextChangedListener(new InputValidator());
+
         btDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -62,7 +70,10 @@ public class ActivityBook extends AppCompatActivity {
         btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent previousIntent = getIntent();
+                String restaurantId = previousIntent.getExtras().getString("restaurantId");
                 Intent intent = new Intent(ActivityBook.this, PlaceActivity.class);
+                intent.putExtra("restaurantId", restaurantId).putExtra("requestedNumberOfPlaces", requestedNumberOfPlaces);
                 startActivity(intent);
             }
         });
@@ -85,6 +96,22 @@ public class ActivityBook extends AppCompatActivity {
             }
         };
     }
+    private class InputValidator implements TextWatcher {
+
+        public void afterTextChanged(Editable s) {
+
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+
+        }
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+            requestedNumberOfPlaces = Integer.parseInt(s.toString());
+
+        }
+    }
+
 }
 
 
