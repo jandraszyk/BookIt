@@ -34,6 +34,12 @@ public class ActivityBook extends AppCompatActivity {
     private EditText editText;
     private boolean[] isComponentSelected = {false, false, false};
     private int requestedNumberOfPlaces;
+
+    Calendar calendar = Calendar.getInstance();
+    int currYear = calendar.get(Calendar.YEAR);
+    int currDay = calendar.get(Calendar.DAY_OF_MONTH);
+    int currMonth = calendar.get(Calendar.MONTH);
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book);
@@ -49,12 +55,7 @@ public class ActivityBook extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 isComponentSelected[0] = true;
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog dialog = new DatePickerDialog(ActivityBook.this, R.style.Theme_AppCompat_Light_Dialog_MinWidth, dateSetListener, year, month, day);
+                DatePickerDialog dialog = new DatePickerDialog(ActivityBook.this, R.style.Theme_AppCompat_Light_Dialog_MinWidth, dateSetListener, currYear, currMonth, currDay);
                 dialog.show();
             }
         });
@@ -99,8 +100,19 @@ public class ActivityBook extends AppCompatActivity {
         dateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                month = month + 1;
-                String date = day + "/" + month + "/" + year;
+                StringBuilder date = new StringBuilder(day + "/" + (month + 1) + "/" + year + " in ");
+                int yearDiff = year - currYear;
+                int monthDiff = month - currMonth;
+                int dayDiff = day - currDay;
+                if(yearDiff != 0) {
+                    date.append(yearDiff + " years ");
+                }
+                if(monthDiff != 0) {
+                    date.append(monthDiff + " months ");
+                }
+                if(dayDiff != 0) {
+                    date.append(dayDiff + " days");
+                }
                 displayDate.setText(date);
 
             }
