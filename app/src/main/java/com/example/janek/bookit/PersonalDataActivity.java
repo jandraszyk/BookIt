@@ -35,7 +35,11 @@ public class PersonalDataActivity extends AppCompatActivity {
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isComponentSelected[0] && isComponentSelected[1] && isComponentSelected[2]){
+                if(!firstName.getText().toString().isEmpty() &&
+                   !lastName.getText().toString().isEmpty() &&
+                   !phoneNumber.getText().toString().isEmpty())
+                {
+                    updateDatabase();
                     /*Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
