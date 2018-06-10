@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class PersonalDataActivity extends AppCompatActivity {
     private EditText firstName, lastName, phoneNumber;
@@ -34,7 +35,8 @@ public class PersonalDataActivity extends AppCompatActivity {
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isComponentSelected[0] && isComponentSelected[1] && isComponentSelected[2]){Handler handler = new Handler();
+                if(isComponentSelected[0] && isComponentSelected[1] && isComponentSelected[2]){
+                    /*Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         public void run() {
                             android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(PersonalDataActivity.this).create();
@@ -47,10 +49,13 @@ public class PersonalDataActivity extends AppCompatActivity {
                                         }
                                     });
                             alertDialog.show();
-                            Intent intent = new Intent(PersonalDataActivity.this, MainActivity.class);
-                            startActivity(intent);
                         }
-                    }, 3000);
+                    }, 3000);*/
+
+                    Intent intent = new Intent(PersonalDataActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    Toast.makeText(PersonalDataActivity.this, "Reservation is being checked", Toast.LENGTH_SHORT).show();
+
                 } else {
                     android.support.v7.app.AlertDialog alertDialog = new android.support.v7.app.AlertDialog.Builder(PersonalDataActivity.this).create();
                     alertDialog.setTitle("Data is incomplete");

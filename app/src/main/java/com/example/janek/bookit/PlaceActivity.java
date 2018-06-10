@@ -62,17 +62,22 @@ public class PlaceActivity extends AppCompatActivity {
     }
     private void loadLayout(){
         button1 = findViewById(R.id.button1);
-        button1.setBackgroundColor(places.get(0).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? Color.GREEN : Color.RED);
+        button1.setBackgroundResource(places.get(0).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? R.drawable.button_available : R.drawable.button_not_available);
+
         button2 = findViewById(R.id.button2);
-        button2.setBackgroundColor(places.get(1).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? Color.GREEN : Color.RED);
+        button2.setBackgroundResource(places.get(1).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? R.drawable.button_available : R.drawable.button_not_available);
+
         button3 = findViewById(R.id.button3);
-        button3.setBackgroundColor(places.get(2).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? Color.GREEN : Color.RED);
+        button3.setBackgroundResource(places.get(2).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? R.drawable.button_available : R.drawable.button_not_available);
+
         button4 = findViewById(R.id.button4);
-        button4.setBackgroundColor(places.get(3).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? Color.GREEN : Color.RED);
+        button4.setBackgroundResource(places.get(3).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? R.drawable.button_available : R.drawable.button_not_available);
+
         button5 = findViewById(R.id.button5);
-        button5.setBackgroundColor(places.get(4).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? Color.GREEN : Color.RED);
+        button5.setBackgroundResource(places.get(4).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? R.drawable.button_available : R.drawable.button_not_available);
+
         button6 = findViewById(R.id.button6);
-        button6.setBackgroundColor(places.get(5).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? Color.GREEN : Color.RED);
+        button6.setBackgroundResource(places.get(5).getNumberOfAvailablePlaces() >= requestedNumberOfPlaces ? R.drawable.button_available : R.drawable.button_not_available);
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override

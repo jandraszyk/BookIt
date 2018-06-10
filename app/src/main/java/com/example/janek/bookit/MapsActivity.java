@@ -161,7 +161,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Toast.makeText(MapsActivity.this,"Restaurant selected", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MapsActivity.this,ActivityBook.class);
+                PlaceInfo selectedPlace = placeInfoArrayList.get(5);
+                String restaurantId = selectedPlace.getId();
+                Intent intent = new Intent(MapsActivity.this, ActivityBook.class);
+                intent.putExtra("restaurantId", restaurantId);
                 startActivity(intent);
             }
         });
