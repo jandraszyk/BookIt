@@ -118,7 +118,8 @@ public class PlaceActivity extends AppCompatActivity {
     }
 
     private void processData(int button){
-        if(places.get(button).getNumberOfAvailablePlaces() < requestedNumberOfPlaces){
+        PlaceInfo_RestaurantsZones selectedZone = places.get(button);
+        if(selectedZone.getNumberOfAvailablePlaces() < requestedNumberOfPlaces){
             AlertDialog alertDialog = new AlertDialog.Builder(PlaceActivity.this).create();
             alertDialog.setTitle("No places available");
             alertDialog.setMessage("Please choose one of the green zones");
@@ -131,7 +132,11 @@ public class PlaceActivity extends AppCompatActivity {
             alertDialog.show();
             return;
         }
+        String placeId = selectedZone.getId();
         Intent intent = new Intent(PlaceActivity.this, PersonalDataActivity.class);
+        intent.putExtra("placeId", placeId)
+                .putExtra("availablePlaces", selectedZone.getNumberOfAvailablePlaces())
+                .putExtra("requestedNumberOfPlaces", requestedNumberOfPlaces);
         startActivity(intent);
     }
 }

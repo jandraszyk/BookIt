@@ -12,9 +12,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.janek.bookit.models.PlaceInfo;
+import com.example.janek.bookit.models.PlaceInfo_RestaurantsZones;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 public class PersonalDataActivity extends AppCompatActivity {
     private EditText firstName, lastName, phoneNumber;
     private Button proceed;
+
+    private DatabaseReference databaseZones;
+    private PlaceInfo_RestaurantsZones updatedZone;
+
+    private int numberOfRequestedPlaces;
+    private int numberOfAvailablePlaces;
+    private String placeId;
 
     private boolean[] isComponentSelected = {false, false, false};
 
@@ -27,10 +43,6 @@ public class PersonalDataActivity extends AppCompatActivity {
         firstName = findViewById(R.id.firstName);
         lastName = findViewById(R.id.lastName);
         phoneNumber = findViewById(R.id.phoneNumber);
-
-        firstName.addTextChangedListener(new InputValidator(0));
-        lastName.addTextChangedListener(new InputValidator(1));
-        phoneNumber.addTextChangedListener(new InputValidator(2));
 
         proceed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,24 +87,30 @@ public class PersonalDataActivity extends AppCompatActivity {
             }
         });
     }
+    private void updateDatabase(){
+        Intent previousIntent = getIntent();
+        placeId = previousIntent.getExtras().getString("placeId");
+        numberOfRequestedPlaces = previousIntent.getExtras().getInt("requestedNumberOfPlaces");
+        numberOfAvailablePlaces = previousIntent.getExtras().getInt("availablePlaces");
+        System.out.println("ID" + placeId);
 
-    private class InputValidator implements TextWatcher {
-        private  int index;
+        databaseZones = FirebaseDatabase.getInstance().getReference("Zones");
+        Query query = databaseZones.orderByChild("id").equalTo(placeId);
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println("Jestem");
+                for (DataSnapshot issue : dataSnapshot.getChildren()) {
+                    System.out.println("Jestem");
+                    updatedZone = issue.getValue(PlaceInfo_RestaurantsZones.class);
+                }
+                updatedZone.setNumberOfAvailablePlaces(numberOfAvailablePlaces - numberOfRequestedPlaces);
+                databaseZones.child(placeId).setValue(updatedZone);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        public InputValidator(int index){
-            this.index = index;
-        }
-
-        public void afterTextChanged(Editable s) {
-
-        }
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-
-        }
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            isComponentSelected[index] = true;
-        }
+            }
+        });
     }
 }
