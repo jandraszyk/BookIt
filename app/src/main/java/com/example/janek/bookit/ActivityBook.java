@@ -32,7 +32,7 @@ public class ActivityBook extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private EditText editText;
-    private boolean[] isComponentSelected = {false, false, false};
+    private boolean[] isComponentSelected = {false, false};
     private int requestedNumberOfPlaces;
 
     Calendar calendar = Calendar.getInstance();
@@ -49,7 +49,6 @@ public class ActivityBook extends AppCompatActivity {
         btDate = findViewById(R.id.btDay);
         btSubmit = findViewById(R.id.btSubmit);
         editText = findViewById(R.id.numOfPeople);
-        editText.addTextChangedListener(new InputValidator());
 
         btDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +63,6 @@ public class ActivityBook extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 isComponentSelected[1] = true;
-                System.out.print("jeden0");
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
@@ -76,7 +74,9 @@ public class ActivityBook extends AppCompatActivity {
         btSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isComponentSelected[0] && isComponentSelected[1] && isComponentSelected[2]){
+                String temp = editText.getText().toString();
+                if(isComponentSelected[0] && isComponentSelected[1] && !temp.isEmpty()){
+                    requestedNumberOfPlaces = Integer.parseInt(temp);
                     Intent previousIntent = getIntent();
                     String restaurantId = previousIntent.getExtras().getString("restaurantId");
                     Intent intent = new Intent(ActivityBook.this, PlaceActivity.class);
@@ -126,23 +126,6 @@ public class ActivityBook extends AppCompatActivity {
             }
         };
     }
-    private class InputValidator implements TextWatcher {
-
-        public void afterTextChanged(Editable s) {
-
-        }
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
-
-        }
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            isComponentSelected[2] = true;
-            requestedNumberOfPlaces = Integer.parseInt(s.toString());
-
-        }
-    }
-
 }
 
 
